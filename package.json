@@ -1,6 +1,6 @@
 {
-  "name": "LeetForces",
-  "displayName": "LeetForces (LeetCode + Codeforces)",
+  "name": "Leet-Forces",
+  "displayName": "Leet-Forces (LeetCode + Codeforces)",
   "description": "Solve LeetCode and Codeforces problems without leaving VS Code: fetch, test, submit.",
   "version": "0.1.1",
   "publisher": "Spy48",
