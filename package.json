@@ -2,7 +2,7 @@
   "name": "Leet-Forces",
   "displayName": "Leet-Forces (LeetCode + Codeforces)",
   "description": "Solve LeetCode and Codeforces problems without leaving VS Code: fetch, test, submit.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "Spy48",
   "license": "MIT",
   "engines": {
