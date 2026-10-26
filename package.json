@@ -1,0 +1,189 @@
+{
+  "name": "cp-runner",
+  "displayName": "CP Runner (LeetCode + Codeforces)",
+  "description": "Solve LeetCode and Codeforces problems without leaving VS Code: fetch, test, submit.",
+  "version": "0.1.1",
+  "publisher": "Spy48",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tabish-5/LeetcodeExtensionVSC.git"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "./media/icon.ico",
+  "keywords": [
+    "leetcode",
+    "java",
+    "algorithms",
+    "cp",
+    "competetive programing",
+    "code forces",
+    "practice"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "cprunner",
+          "title": "CP Runner",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "cprunner": [
+        {
+          "type": "webview",
+          "id": "cprunner.sidebar",
+          "name": "Problem"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "cprunner.test",
+        "title": "Test",
+        "category": "CP Runner",
+        "icon": "$(play)"
+      },
+      {
+        "command": "cprunner.submit",
+        "title": "Submit",
+        "category": "CP Runner",
+        "icon": "$(cloud-upload)"
+      },
+      {
+        "command": "cprunner.description",
+        "title": "Show Description",
+        "category": "CP Runner",
+        "icon": "$(book)"
+      },
+      {
+        "command": "cprunner.changeProblem",
+        "title": "Change Problem",
+        "category": "CP Runner"
+      },
+      {
+        "command": "cprunner.nextProblem",
+        "title": "Next Problem",
+        "category": "CP Runner"
+      },
+      {
+        "command": "cprunner.prevProblem",
+        "title": "Previous Problem",
+        "category": "CP Runner"
+      },
+      {
+        "command": "cprunner.dailyProblem",
+        "title": "LeetCode Daily Problem",
+        "category": "CP Runner"
+      },
+      {
+        "command": "cprunner.openSolution",
+        "title": "Open Solution File",
+        "category": "CP Runner"
+      },
+      {
+        "command": "cprunner.savedTests",
+        "title": "Failed Cases / Custom Tests",
+        "category": "CP Runner"
+      },
+      {
+        "command": "cprunner.chooseLanguage",
+        "title": "Choose Language",
+        "category": "CP Runner"
+      },
+      {
+        "command": "cprunner.switchPlatform",
+        "title": "Switch Platform (LeetCode / Codeforces)",
+        "category": "CP Runner"
+      },
+      {
+        "command": "cprunner.account",
+        "title": "Log in / Account",
+        "category": "CP Runner"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "cprunner.test",
+          "when": "resourceFilename =~ /^(lc_solution\\.|solution\\.|Main\\.)/",
+          "group": "navigation@1"
+        },
+        {
+          "command": "cprunner.submit",
+          "when": "resourceFilename =~ /^(lc_solution\\.|solution\\.|Main\\.)/",
+          "group": "navigation@2"
+        },
+        {
+          "command": "cprunner.description",
+          "when": "resourceFilename =~ /^(lc_solution\\.|solution\\.|Main\\.)/",
+          "group": "navigation@3"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "CP Runner",
+      "properties": {
+        "cprunner.language": {
+          "type": "string",
+          "default": "cpp",
+          "enum": [
+            "cpp",
+            "c",
+            "java",
+            "python",
+            "javascript",
+            "kotlin",
+            "go",
+            "rust",
+            "csharp",
+            "ruby",
+            "php",
+            "scala"
+          ],
+          "description": "Language used for both LeetCode and Codeforces."
+        },
+        "cprunner.codeforces.submitMode": {
+          "type": "string",
+          "default": "browser",
+          "enum": [
+            "browser",
+            "direct",
+            "ask"
+          ],
+          "enumDescriptions": [
+            "Copy code to clipboard, open the submit page, you pass the human check and click Submit; the verdict is tracked here.",
+            "Post the form straight from VS Code (needs a valid browser cookie; may be blocked by Cloudflare).",
+            "Ask every time."
+          ],
+          "description": "How to submit to Codeforces."
+        }
+      }
+    }
+  },
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": false,
+      "description": "CP Runner compiles and runs code and reads state files from the workspace; only use it in folders you trust."
+    },
+    "virtualWorkspaces": false
+  },
+  "scripts": {
+    "package": "vsce package --allow-missing-repository",
+    "dev": "vsce package"
+  },
+  "dependencies": {
+    "@vscode/vsce": "^4.0.0"
+  }
+}
