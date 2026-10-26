@@ -1,8 +1,8 @@
 {
-  "name": "Leet-Forces",
+  "name": "leet-forces",
   "displayName": "Leet-Forces (LeetCode + Codeforces)",
   "description": "Solve LeetCode and Codeforces problems without leaving VS Code: fetch, test, submit.",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "publisher": "Spy48",
   "license": "MIT",
   "engines": {
@@ -33,109 +33,110 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "cprunner",
-          "title": "CP Runner",
+          "id": "leetforces",
+          "title": "Leet-Forces",
           "icon": "media/icon.svg"
         }
       ]
     },
     "views": {
-      "cprunner": [
+      "leetforces": [
         {
           "type": "webview",
-          "id": "cprunner.sidebar",
-          "name": "Problem"
+          "id": "leetforces.sidebar",
+          "name": "Problem",
+          "icon": "media/icon.svg"
         }
       ]
     },
     "commands": [
       {
-        "command": "cprunner.test",
+        "command": "leetforces.test",
         "title": "Test",
-        "category": "CP Runner",
+        "category": "Leet-Forces",
         "icon": "$(play)"
       },
       {
-        "command": "cprunner.submit",
+        "command": "leetforces.submit",
         "title": "Submit",
-        "category": "CP Runner",
+        "category": "Leet-Forces",
         "icon": "$(cloud-upload)"
       },
       {
-        "command": "cprunner.description",
+        "command": "leetforces.description",
         "title": "Show Description",
-        "category": "CP Runner",
+        "category": "Leet-Forces",
         "icon": "$(book)"
       },
       {
-        "command": "cprunner.changeProblem",
+        "command": "leetforces.changeProblem",
         "title": "Change Problem",
-        "category": "CP Runner"
+        "category": "Leet-Forces"
       },
       {
-        "command": "cprunner.nextProblem",
+        "command": "leetforces.nextProblem",
         "title": "Next Problem",
-        "category": "CP Runner"
+        "category": "Leet-Forces"
       },
       {
-        "command": "cprunner.prevProblem",
+        "command": "leetforces.prevProblem",
         "title": "Previous Problem",
-        "category": "CP Runner"
+        "category": "Leet-Forces"
       },
       {
-        "command": "cprunner.dailyProblem",
+        "command": "leetforces.dailyProblem",
         "title": "LeetCode Daily Problem",
-        "category": "CP Runner"
+        "category": "Leet-Forces"
       },
       {
-        "command": "cprunner.openSolution",
+        "command": "leetforces.openSolution",
         "title": "Open Solution File",
-        "category": "CP Runner"
+        "category": "Leet-Forces"
       },
       {
-        "command": "cprunner.savedTests",
+        "command": "leetforces.savedTests",
         "title": "Failed Cases / Custom Tests",
-        "category": "CP Runner"
+        "category": "Leet-Forces"
       },
       {
-        "command": "cprunner.chooseLanguage",
+        "command": "leetforces.chooseLanguage",
         "title": "Choose Language",
-        "category": "CP Runner"
+        "category": "Leet-Forces"
       },
       {
-        "command": "cprunner.switchPlatform",
+        "command": "leetforces.switchPlatform",
         "title": "Switch Platform (LeetCode / Codeforces)",
-        "category": "CP Runner"
+        "category": "Leet-Forces"
       },
       {
-        "command": "cprunner.account",
+        "command": "leetforces.account",
         "title": "Log in / Account",
-        "category": "CP Runner"
+        "category": "Leet-Forces"
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "command": "cprunner.test",
+          "command": "leetforces.test",
           "when": "resourceFilename =~ /^(lc_solution\\.|solution\\.|Main\\.)/",
           "group": "navigation@1"
         },
         {
-          "command": "cprunner.submit",
+          "command": "leetforces.submit",
           "when": "resourceFilename =~ /^(lc_solution\\.|solution\\.|Main\\.)/",
           "group": "navigation@2"
         },
         {
-          "command": "cprunner.description",
+          "command": "leetforces.description",
           "when": "resourceFilename =~ /^(lc_solution\\.|solution\\.|Main\\.)/",
           "group": "navigation@3"
         }
       ]
     },
     "configuration": {
-      "title": "CP Runner",
+      "title": "Leet-Forces",
       "properties": {
-        "cprunner.language": {
+        "leetforces.language": {
           "type": "string",
           "default": "cpp",
           "enum": [
@@ -154,7 +155,7 @@
           ],
           "description": "Language used for both LeetCode and Codeforces."
         },
-        "cprunner.codeforces.submitMode": {
+        "leetforces.codeforces.submitMode": {
           "type": "string",
           "default": "browser",
           "enum": [
@@ -175,7 +176,7 @@
   "capabilities": {
     "untrustedWorkspaces": {
       "supported": false,
-      "description": "CP Runner compiles and runs code and reads state files from the workspace; only use it in folders you trust."
+      "description": "Leet-Forces compiles and runs code and reads state files from the workspace; only use it in folders you trust."
     },
     "virtualWorkspaces": false
   },
