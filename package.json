@@ -1,6 +1,6 @@
 {
-  "name": "cp-runner",
-  "displayName": "CP Runner (LeetCode + Codeforces)",
+  "name": "LeetForces",
+  "displayName": "LeetForces (LeetCode + Codeforces)",
   "description": "Solve LeetCode and Codeforces problems without leaving VS Code: fetch, test, submit.",
   "version": "0.1.1",
   "publisher": "Spy48",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/tabish-5/LeetcodeExtensionVSC.git"
+    "url": "https://github.com/tabish-5/LeetForcesVSC.git"
   },
   "categories": [
     "Other"
