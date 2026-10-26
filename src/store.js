@@ -13,10 +13,10 @@ const S = {
   // ---- folders (inside the opened workspace folder) ----
   root() {
     const f = vscode.workspace.workspaceFolders;
-    if (!f || !f.length) throw new Error('Open a folder in VS Code first (File > Open Folder), CP Runner keeps your solutions there.');
+    if (!f || !f.length) throw new Error('Open a folder in VS Code first (File > Open Folder), Leet-Forces keeps your solutions there.');
     return f[0].uri.fsPath;
   },
-  stateDir() { return path.join(S.root(), '.cprunner'); },
+  stateDir() { return path.join(S.root(), '.leetforces'); },
   testsDir() { return path.join(S.root(), 'tests'); },
   buildDir() { return path.join(S.stateDir(), 'build'); },
   backupDir() { return path.join(S.stateDir(), 'backup'); },
@@ -27,7 +27,7 @@ const S = {
   plat() { return ctx.workspaceState.get('platform', 'lc'); },
   setPlat(p) { return ctx.workspaceState.update('platform', p); },
   platName(p = S.plat()) { return p === 'lc' ? 'LeetCode' : 'Codeforces'; },
-  langKey() { return vscode.workspace.getConfiguration('cprunner').get('language', 'cpp'); },
+  langKey() { return vscode.workspace.getConfiguration('leetforces').get('language', 'cpp'); },
   lang() { return LANGS.find((l) => l.key === S.langKey()) || LANGS[0]; },
   ext(l) { return path.extname(l.file); },
   srcPath(plat, l = S.lang()) {
@@ -36,16 +36,16 @@ const S = {
 
   // ---- auth (SecretStorage; cookies never touch the workspace) ----
   async getAuth(plat) {
-    const s = await ctx.secrets.get('cprunner.auth.' + plat);
+    const s = await ctx.secrets.get('leetforces.auth.' + plat);
     try { return s ? JSON.parse(s) : {}; } catch { return {}; }
   },
   async setAuth(plat, data) {
-    await ctx.secrets.store('cprunner.auth.' + plat, JSON.stringify(data));
+    await ctx.secrets.store('leetforces.auth.' + plat, JSON.stringify(data));
     await ctx.globalState.update('signed.' + plat, plat === 'lc' ? !!(data.session && data.csrf) : !!data.cookie);
     if (plat === 'cf') await ctx.globalState.update('cfHandle', data.handle || '');
   },
   async clearAuth(plat) {
-    await ctx.secrets.delete('cprunner.auth.' + plat);
+    await ctx.secrets.delete('leetforces.auth.' + plat);
     await ctx.globalState.update('signed.' + plat, false);
     if (plat === 'cf') await ctx.globalState.update('cfHandle', '');
   },

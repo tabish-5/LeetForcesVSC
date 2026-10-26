@@ -172,7 +172,7 @@ function sidebarHtml(st, nonce) {
     <div class="row">${btn('chooseLanguage', 'Language: ' + esc(st.langName))}${btn('account', st.signed ? '● Signed in' : '○ Log in')}</div>
     <div class="hint">${esc(st.tip)}</div>`;
   const script = `const vs=acquireVsCodeApi();document.addEventListener('click',e=>{const t=e.target.closest('button');if(!t)return;if(t.dataset.cmd)vs.postMessage({type:'cmd',id:t.dataset.cmd});else if(t.dataset.plat)vs.postMessage({type:'plat',value:t.dataset.plat});});`;
-  return shell('CP Runner', body, SIDE_CSS, script, nonce);
+  return shell('Leet-Forces', body, SIDE_CSS, script, nonce);
 }
 
 module.exports = { descriptionHtml, resultHtml, sidebarHtml };

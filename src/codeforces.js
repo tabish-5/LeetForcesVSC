@@ -22,7 +22,7 @@ async function fetchPage(url) {
   const body = await r.text();
   const cf = /Just a moment|cf-chl|challenge-platform/.test(body);
   if (r.status === 403 || r.status === 503 || cf) {
-    throw new Error("Codeforces blocked the request (Cloudflare check).\nRun \"CP Runner: Log in / Account\" on Codeforces and add your browser's Cookie and User-Agent.");
+    throw new Error("Codeforces blocked the request (Cloudflare check).\nRun \"Leet-Forces: Log in / Account\" on Codeforces and add your browser's Cookie and User-Agent.");
   }
   if (r.status === 429) throw new Error('Rate limited by Codeforces (HTTP 429). Wait a bit and retry.');
   if (r.status < 200 || r.status >= 300) throw new Error(`Codeforces returned HTTP ${r.status}.`);

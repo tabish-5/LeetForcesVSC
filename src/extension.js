@@ -70,7 +70,7 @@ function refreshUI() {
   // status bar
   let lang = S.lang();
   statusItems.platform.text = `$(code) ${isLc() ? 'LC' : 'CF'} · ${lang.name}`;
-  statusItems.platform.tooltip = 'CP Runner: switch platform (click) — language is in settings';
+  statusItems.platform.tooltip = 'Leet-Forces: switch platform (click) — language is in settings';
   statusItems.test.text = '$(play) Test';
   statusItems.submit.text = '$(cloud-upload) Submit';
   Object.values(statusItems).forEach((i) => i.show());
@@ -83,7 +83,7 @@ function sidebarContent() {
   if (root) p = S.loadProblem(plat);
   const signed = S.signedIn(plat);
   let tip;
-  if (!root) tip = 'Open a folder first: CP Runner stores solutions in your workspace.';
+  if (!root) tip = 'Open a folder first: Leet-Forces stores solutions in your workspace.';
   else if (!p) tip = plat === 'lc' ? 'Start here: Change Problem, then enter a number like 1.' : 'Start here: Change Problem, then enter a code like 4A.';
   else if (plat === 'lc' && !signed) tip = 'To test or submit, log in first.';
   else if (plat === 'cf' && !S.cfHandle()) tip = 'Log in and set your handle to see solved marks.';
@@ -99,7 +99,7 @@ function showPanel(kind, title, html, column, preserveFocus) {
   const holder = kind === 'result' ? resultPanel : descPanel;
   let panel = holder;
   if (!panel) {
-    panel = vscode.window.createWebviewPanel(`cprunner.${kind}`, title, { viewColumn: column, preserveFocus: true }, { enableScripts: false, localResourceRoots: [] });
+    panel = vscode.window.createWebviewPanel(`leetforces.${kind}`, title, { viewColumn: column, preserveFocus: true }, { enableScripts: false, localResourceRoots: [] });
     panel.onDidDispose(() => { if (kind === 'result') resultPanel = null; else descPanel = null; });
     if (kind === 'result') resultPanel = panel; else descPanel = panel;
   }
@@ -108,7 +108,7 @@ function showPanel(kind, title, html, column, preserveFocus) {
   panel.reveal(undefined, preserveFocus);
 }
 
-const showResult = (model) => showPanel('result', `CP Runner: ${model.heading}`, views.resultHtml(model), vscode.ViewColumn.Beside, true);
+const showResult = (model) => showPanel('result', `Leet-Forces: ${model.heading}`, views.resultHtml(model), vscode.ViewColumn.Beside, true);
 
 async function openFile(file, column = vscode.ViewColumn.One) {
   const doc = await vscode.workspace.openTextDocument(vscode.Uri.file(file));
@@ -124,7 +124,7 @@ async function cmdDescription() {
   if (!p) return;
   const plat = S.plat();
   const link = plat === 'lc' ? `${lc.BASE}/problems/${p.slug}/` : `${cf.BASE}/problemset/problem/${p.contest}/${p.index}`;
-  showPanel('desc', 'CP Runner: ' + S.problemTitle(plat, p),
+  showPanel('desc', 'Leet-Forces: ' + S.problemTitle(plat, p),
     views.descriptionHtml(plat, p, { cfState: cfState(p), link }), vscode.ViewColumn.Beside, true);
 }
 
@@ -166,7 +166,7 @@ async function submitCf(p, lang, code) {
     const pick = await vscode.window.showWarningMessage('Your file still contains only the starter code. Submit anyway?', { modal: true }, 'Submit anyway');
     if (!pick) return;
   }
-  let mode = vscode.workspace.getConfiguration('cprunner').get('codeforces.submitMode', 'browser');
+  let mode = vscode.workspace.getConfiguration('leetforces').get('codeforces.submitMode', 'browser');
   if (mode === 'ask') {
     const pick = await vscode.window.showQuickPick([
       { label: 'Browser', description: 'you do the human check and click Submit', value: 'browser' },
@@ -270,7 +270,7 @@ async function cmdChooseLanguage() {
     LANGS.map((l) => ({ label: l.name, description: l.file, picked: l.key === cur.key, detail: l.key === cur.key ? 'current' : undefined, key: l.key })),
     { title: 'Language (shared by LeetCode and Codeforces)' });
   if (!pick) return;
-  await vscode.workspace.getConfiguration('cprunner').update('language', pick.key, vscode.ConfigurationTarget.Global);
+  await vscode.workspace.getConfiguration('leetforces').update('language', pick.key, vscode.ConfigurationTarget.Global);
   const l = LANGS.find((x) => x.key === pick.key);
   const plat = S.plat();
   const p = S.loadProblem(plat);
@@ -283,7 +283,7 @@ async function cmdChooseLanguage() {
       if (!starter) { info(`Language set to ${l.name}, but LeetCode has no ${l.name} starter code for this problem.`); }
       else {
         S.writeSource(src, starter, S.problemId(plat, p));
-        info(`Language set to ${l.name}. Created ${path.basename(src)} with starter code (anything there before is backed up in .cprunner/backup).`);
+        info(`Language set to ${l.name}. Created ${path.basename(src)} with starter code (anything there before is backed up in .leetforces/backup).`);
         await openFile(src);
       }
     }
@@ -430,7 +430,7 @@ class Sidebar {
     view.webview.options = { enableScripts: true, localResourceRoots: [] };
     view.webview.html = sidebarContent();
     view.webview.onDidReceiveMessage(async (m) => {
-      if (m && m.type === 'cmd' && SIDEBAR_COMMANDS.has(m.id)) await vscode.commands.executeCommand('cprunner.' + m.id);
+      if (m && m.type === 'cmd' && SIDEBAR_COMMANDS.has(m.id)) await vscode.commands.executeCommand('leetforces.' + m.id);
       else if (m.type === 'plat') await setPlatform(m.value === 'cf' ? 'cf' : 'lc');
     });
     view.onDidChangeVisibility(() => { if (view.visible) view.webview.html = sidebarContent(); });
@@ -442,10 +442,35 @@ class Sidebar {
 // activation
 // ============================================================
 
-/** Imports a login saved by the old command-line runner (.cprunner/auth.json). */
+/** Copies state from the old ".cprunner" folder (Java tool / v1.0.x) once, so nothing is lost by the rename. */
+function migrateOldFolder() {
+  try {
+    const oldDir = path.join(S.root(), '.cprunner'), newDir = path.join(S.root(), '.leetforces');
+    if (fs.existsSync(oldDir) && !fs.existsSync(newDir)) fs.cpSync(oldDir, newDir, { recursive: true });
+  } catch { /* no workspace or read-only: skip */ }
+}
+
+/** Moves logins stored under the old extension name ("cprunner") into the new secret keys. */
+async function migrateOldSecrets() {
+  for (const plat of ['lc', 'cf']) {
+    try {
+      if (Object.keys(await S.getAuth(plat)).length) continue;
+      const raw = await S.context.secrets.get('cprunner.auth.' + plat);
+      if (raw) { await S.setAuth(plat, JSON.parse(raw)); await S.context.secrets.delete('cprunner.auth.' + plat); }
+    } catch { /* ignore */ }
+  }
+}
+
+/** Imports a login saved by the old command-line runner (auth.json in the workspace). */
 async function importOldAuth() {
-  let file;
-  try { file = path.join(S.root(), '.cprunner', 'auth.json'); } catch { return; }
+  let file = null;
+  try {
+    for (const d of ['.leetforces', '.cprunner']) {
+      const f = path.join(S.root(), d, 'auth.json');
+      if (fs.existsSync(f)) { file = f; break; }
+    }
+  } catch { return; }
+  if (!file) return;
   const old = readJson(file, null);
   if (!old || typeof old !== 'object') return;
   const todo = [];
@@ -454,7 +479,7 @@ async function importOldAuth() {
   }
   if (!todo.length) return;
   const who = todo.map((p) => (p === 'cf' && old.cf.handle ? `Codeforces (handle: ${str(old.cf.handle).slice(0, 40)})` : S.platName(p))).join(', ');
-  const ok = await vscode.window.showWarningMessage('Import saved login from .cprunner/auth.json?',
+  const ok = await vscode.window.showWarningMessage('Import saved login from .leetforces/auth.json?',
     { modal: true, detail: `This file is inside the workspace, so anyone who gave you this folder could have written it. Importing signs you in as: ${who}.\n\nOnly import it if you created it yourself.` }, 'Import');
   if (ok !== 'Import') return;
   let imported = false;
@@ -463,13 +488,13 @@ async function importOldAuth() {
     const clean = plat === 'lc' ? { session: str(o.session), csrf: str(o.csrf) } : { handle: str(o.handle), cookie: str(o.cookie), ua: str(o.ua) };
     await S.setAuth(plat, clean); imported = true;
   }
-  if (imported) info('CP Runner imported your saved login from .cprunner/auth.json. You can now delete that file.');
+  if (imported) info('Leet-Forces imported your saved login from .leetforces/auth.json. You can now delete that file.');
 }
 
 async function activate(context) {
   S.init(context);
 
-  context.subscriptions.push(vscode.window.registerWebviewViewProvider('cprunner.sidebar', new Sidebar()));
+  context.subscriptions.push(vscode.window.registerWebviewViewProvider('leetforces.sidebar', new Sidebar()));
 
   const mk = (id, cmd, prio) => {
     const i = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, prio);
@@ -477,11 +502,11 @@ async function activate(context) {
     context.subscriptions.push(i);
     statusItems[id] = i;
   };
-  mk('platform', 'cprunner.switchPlatform', 100);
-  mk('test', 'cprunner.test', 99);
-  mk('submit', 'cprunner.submit', 98);
+  mk('platform', 'leetforces.switchPlatform', 100);
+  mk('test', 'leetforces.test', 99);
+  mk('submit', 'leetforces.submit', 98);
 
-  const reg = (id, fn) => context.subscriptions.push(vscode.commands.registerCommand('cprunner.' + id, (...a) => guard(() => fn(...a))));
+  const reg = (id, fn) => context.subscriptions.push(vscode.commands.registerCommand('leetforces.' + id, (...a) => guard(() => fn(...a))));
   reg('test', cmdTest);
   reg('submit', cmdSubmit);
   reg('description', cmdDescription);
@@ -495,13 +520,15 @@ async function activate(context) {
   reg('switchPlatform', cmdSwitchPlatform);
   reg('account', cmdAccount);
 
-  context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((e) => { if (e.affectsConfiguration('cprunner')) refreshUI(); }));
+  context.subscriptions.push(vscode.workspace.onDidChangeConfiguration((e) => { if (e.affectsConfiguration('leetforces')) refreshUI(); }));
   context.subscriptions.push(vscode.workspace.onDidChangeWorkspaceFolders(() => refreshUI()));
 
+  migrateOldFolder();
   refreshUI();
 
   // background: imports + solved marks (silent on failure)
   (async () => {
+    await migrateOldSecrets();
     await importOldAuth();
     if (S.cfHandle()) { await cf.refreshSubmissions(); refreshUI(); }
     if (S.signedIn('lc')) { try { if (await lc.refreshStatus()) refreshUI(); } catch { /* ignore */ } }

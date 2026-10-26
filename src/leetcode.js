@@ -283,7 +283,7 @@ async function submit(p, code, lang, token) {
     jr = await judge(`${BASE}/problems/${p.slug}/submit/`, p, judgeBody(p, code, null, lang), token);
   } catch (e) {
     if (e instanceof AuthError && !e.missing) {
-      throw new Error(e.message + '\nLeetCode may be asking for a human check, or your login expired (run "CP Runner: Log in / Account").');
+      throw new Error(e.message + '\nLeetCode may be asking for a human check, or your login expired (run "Leet-Forces: Log in / Account").');
     }
     throw e;
   }
