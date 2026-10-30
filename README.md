@@ -112,7 +112,7 @@ Logins live in **VS Code SecretStorage**, not in the workspace. An old `.cprunne
 
 ## 📦 Install
 
-### 🧪 Best way to test it: install on VS Code (RECOMMENDED)
+### 🧪 Best way to test it: [install on VS Code (RECOMMENDED)](vscode:extension/Spy48.Leet-Forces)
 
 The fastest, most realistic way to try Leet-Forces is to install it directly in your own VS Code — it runs exactly as your users will experience it.
 
